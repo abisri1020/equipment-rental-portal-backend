@@ -16,7 +16,7 @@ const MONGO_URL = process.env.MONGO_URL;
 async function createConnection() {const client = new MongoClient(MONGO_URL);await client.connect();console.log("Mongo is connected ✌️😊");return client;}const client = await createConnection();
 
 app.get("/", async function(request,response){
-    response.send("Hello muruga saranam😍");
+    response.send("🎇Babi Rentals welcomes you!!!🎇 (for items : /items; for different catagory : /items/catagory)");
 });
 
 app.get("/items", async function(request,response){
