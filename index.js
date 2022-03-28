@@ -21,50 +21,70 @@ app.get("/", async function(request,response){
 });
 
 app.get("/items", async function(request,response){
-    const items= await client
-    .db("BabiRentalItems")
-    .collection("items")
-    .find({})
-    .toArray();
+    const items= await getItems();
    response.send(items);
 });
 
 app.get("/items/:catagory", async function(request,response){
     const {catagory}=request.params;
     // const item=items.filter((i)=>i.catagory===catagory);
-    const item= await client
-    .db("BabiRentalItems")
-    .collection("items")
-    .find({"catagory":{"$in":[catagory]}})
-    .toArray();
+    const item= await getItemsByCatagory(catagory);
    response.send(item);
 });
 
 app.post("/items", async function (request, response) {
     const data = request.body;
     console.log(data);
-    const result = await client
-    .db("BabiRentalItems").collection("items").insertMany(data);
+    const result = await addItems(data);
     response.send(result);
 });
 
 app.delete("/items/:id", async function(request,response){
     const {id}=request.params;
-    const del= await client
-    .db("BabiRentalItems")
-    .collection("items")
-    .deleteOne({id : id});
+    const del= await deleteItems(id);
    response.send(del);
 });
 
 app.put("/items/:id", async function(request,response){
     const {id}=request.params;
     const updt=request.body
-    const edit= await client
-    .db("BabiRentalItems")
-    .collection("items")
-    .updateOne({id : id},{$set:updt});
+    const edit= await editItems(id, updt);
    response.send(edit);
 });
 
 app.listen(PORT,()=> console.log(`Server is running at port ${PORT}`));
+
+async function editItems(id, updt) {
+    return await client
+        .db("BabiRentalItems")
+        .collection("items")
+        .updateOne({ id: id }, { $set: updt });
+}
+
+async function deleteItems(id) {
+    return await client
+        .db("BabiRentalItems")
+        .collection("items")
+        .deleteOne({ id: id });
+}
+
+async function addItems(data) {
+    return await client
+        .db("BabiRentalItems").collection("items").insertMany(data);
+}
+
+async function getItemsByCatagory(catagory) {
+    return await client
+        .db("BabiRentalItems")
+        .collection("items")
+        .find({ "catagory": { "$in": [catagory] } })
+        .toArray();
+}
+
+async function getItems() {
+    return await client
+        .db("BabiRentalItems")
+        .collection("items")
+        .find({})
+        .toArray();
+}
