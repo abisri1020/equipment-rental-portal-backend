@@ -1,6 +1,6 @@
 import express from "express";
 import bcrypt from "bcrypt";
-import {createUser} from "../crudfunction.js";
+import {createUser,loginUser} from "../crudfunction.js";
 const router=express.Router();
 async function genPassword(password){
     const salt= await bcrypt.genSalt(10);
@@ -20,6 +20,22 @@ router.post("/signup", async function (request, response) {
     response.send(result);
 });
 
-
+router.post("/login", async function (request, response) {
+    const {username,password} = request.body;
+    const userFromDB=await loginUser(username);
+    console.log(userFromDB);
+    if(!userFromDB){
+        response.status(401).send({message:"Invalid credentials"});
+    }else{
+        const storedPassword=userFromDB.password;
+        const isPasswordMatch= await bcrypt.compare(password,storedPassword);
+        console.log("isPasswordMatch",isPasswordMatch);
+        if(isPasswordMatch){
+            response.send({message:"Successfull login"});
+        }else{
+            response.status(401).send({message:"Invalid credentials"});
+        }
+    }
+});
 
 export const usersRouter=router;
