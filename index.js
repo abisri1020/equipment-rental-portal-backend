@@ -4,6 +4,8 @@
  import dotenv from "dotenv";
 import cors from "cors";
 import {itemsRouter} from "./routes/itemscrud.js";
+import {usersRouter} from "./routes/users.js";
+import bcrypt from "bcrypt";
 dotenv.config();
 
 const app = express();
@@ -22,5 +24,6 @@ app.get("/", async function(request,response){
 });
 
 app.use("/items", itemsRouter);
-
+app.use("/users",usersRouter);
 app.listen(PORT,()=> console.log(`Server is running at port ${PORT}`));
+

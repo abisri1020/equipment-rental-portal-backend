@@ -29,4 +29,7 @@ export async function getItems() {
         .collection("items")
         .find({})
         .toArray();
+}export async function createUser(data) {
+    return await client
+        .db("BabiRentalItems").collection("users").insertOne(data);
 }
